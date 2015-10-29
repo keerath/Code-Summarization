@@ -177,11 +177,11 @@ public class GibbsSampler implements Serializable {
 			gibbsIteration(false);
 
 			// save sampler state every savecount iterations
-			if (savecount != -1 && i % savecount == 0) {
+			/*if (savecount != -1 && i % savecount == 0) {
 				System.out.println("\nSerializing the model...");
 				this.saveSelf(corpus.getCorpusFolder() + saveStateFileName);
 				System.out.println("\ndone.");
-			}
+			}*/
 
 			// print likelihood every lcount iterations
 			if (lcount != -1 && i % lcount == 0)
@@ -202,9 +202,9 @@ public class GibbsSampler implements Serializable {
 		gibbsIteration(true);
 
 		// Serialize final model
-		System.out.println("\nSerializing the model...");
+		/*System.out.println("\nSerializing the model...");
 		this.saveSelf(corpus.getCorpusFolder() + "SamplerState.ser");
-		System.out.println("\ndone.");
+		System.out.println("\ndone.");*/
 
 		// Final likelihood
 		System.out.println("\nFinal" + "\t" + logLikelihood());
@@ -808,10 +808,27 @@ public class GibbsSampler implements Serializable {
 			else
 				kl = kl
 						+ phiHat(content, ti)
-						* Math.log(phiHat(content, ti) / phiHat(background, ti));
+						* Math.log(phiHat(content, ti) / bgPhiHat(ti)); //phiHat(background, ti));
 		}
 
 		return kl;
+	}
+
+	public double bgPhiHat(int ti){
+			/*return (((double) topic.getTokenCount(token)) + beta[topic.getTopicID()])
+					/ (((double) topic.getTotalTokenCount()) + ((double) nTokensCorpus)
+					* beta[topic.getTopicID()]);*/
+
+		Double numerator = 0D;
+		Double denom = 0D;
+		for (int b = 0; b < Topic.nBackTopics; b++){
+			Topic topic = btopic[b];
+			numerator += ((double) topic.getTokenCount(ti)) + (beta[topic.getTopicID()]/Topic.nBackTopics);
+			denom += ((double) topic.getTotalTokenCount()) + ((double) nTokensCorpus)
+					* beta[topic.getTopicID()]/Topic.nBackTopics;
+		}
+		//TODO: Check div by zero
+		return numerator/denom;
 	}
 
 	/**

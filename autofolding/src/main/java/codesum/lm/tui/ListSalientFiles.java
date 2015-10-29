@@ -22,7 +22,7 @@ import com.beust.jcommander.ParameterException;
 public class ListSalientFiles {
 
 	/** Command line parameters */
-	public static class Parameters {
+	/*public static class Parameters {
 
 		@Parameter(names = { "-d", "--dir" }, description = "Directory where projects are located", required = true)
 		String workingDir;
@@ -61,10 +61,10 @@ public class ListSalientFiles {
 			jc.usage();
 		}
 
-	}
+	}*/
 
-	private static void listSalientFiles(String workingDir, String project,
-			int compressionRatio, int backoffTopic, File outFolder, String samplerLoc, Boolean ignoreTestFiles) {
+	protected static void listSalientFiles(String workingDir, String project,
+			int compressionRatio, int backoffTopic, GibbsSampler sampler, Boolean ignoreTestFiles) {
 		
 		final Settings set = new Settings();
 
@@ -75,8 +75,6 @@ public class ListSalientFiles {
 
 		// Load Topic Model
 		System.out.println("Deserializing the model...");
-		final GibbsSampler sampler = GibbsSampler.readCorpus(samplerLoc
-				+ "TopicSum/Source/SamplerState.ser");
 		
 		final int ci = sampler.getCorpus().getIndexProject(project);
 		Topic projectTopic = sampler.getContentTopic(ci);
@@ -110,6 +108,7 @@ public class ListSalientFiles {
 				new String[] { "java" }, true);
 		
 		int count = 0;
+
 		
 		List<FileScore> fileScores = new ArrayList<ListSalientFiles.FileScore>();
 		for (final File file : files) {

@@ -29,7 +29,6 @@ public class TopicSum {
 		System.out.println("\n===== Training the model...");
 		final GibbsSampler gibbsSampler = new GibbsSampler(corpus);
 		gibbsSampler.estimate(iterations, 10, 50, 1000, savedStateName);
-
 		printSamplerStats(gibbsSampler);
 		// outputTopicSumSummary(corpus, gibbsSampler);
 
